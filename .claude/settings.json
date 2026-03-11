@@ -1,0 +1,19 @@
+{
+  "permissions": {
+    "allow": [
+      "Read",
+      "Write",
+      "Edit",
+      "Bash(npm run *)",
+      "Bash(npm install*)",
+      "Bash(git *)",
+      "Bash(npx *)"
+    ],
+    "deny": [
+      "Bash(rm -rf *)",
+      "Bash(curl *)",
+      "Read(~/.ssh/*)",
+      "Read(.env.local)"
+    ]
+  }
+}
