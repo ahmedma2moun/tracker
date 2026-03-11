@@ -31,3 +31,43 @@ export async function POST(request: NextRequest) {
     );
   }
 }
+
+export async function DELETE(request: NextRequest) {
+  try {
+    await connectDB();
+    const { date } = await request.json();
+
+    if (!date || !/^\d{4}-\d{2}-\d{2}$/.test(date)) {
+      return NextResponse.json(
+        { success: false, error: "Invalid date format. Expected YYYY-MM-DD" },
+        { status: 400 }
+      );
+    }
+
+    const existing = await DoneRecord.findOne({ date });
+    if (!existing || existing.count === 0) {
+      return NextResponse.json(
+        { success: false, error: "No done entries to remove for this date" },
+        { status: 400 }
+      );
+    }
+
+    if (existing.count === 1) {
+      await DoneRecord.deleteOne({ date });
+      return NextResponse.json({ success: true, record: null });
+    }
+
+    const record = await DoneRecord.findOneAndUpdate(
+      { date },
+      { $inc: { count: -1 } },
+      { new: true }
+    );
+    return NextResponse.json({ success: true, record });
+  } catch (err) {
+    console.error("[DELETE /api/done]", err);
+    return NextResponse.json(
+      { success: false, error: "Failed to mark undone" },
+      { status: 500 }
+    );
+  }
+}

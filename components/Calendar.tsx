@@ -90,6 +90,24 @@ export default function Calendar() {
     }
   };
 
+  const handleUndone = async () => {
+    if (!selectedDate || loading) return;
+    setLoading(true);
+    try {
+      const res = await fetch("/api/done", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ date: selectedDate }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        await fetchRecords();
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 max-w-sm mx-auto">
       {/* Month navigation */}
@@ -180,23 +198,31 @@ export default function Calendar() {
         })}
       </div>
 
-      {/* Done button */}
-      <div className="mt-6">
+      {/* Done / Undone buttons */}
+      <div className="mt-6 flex gap-2">
+        <button
+          onClick={handleUndone}
+          disabled={!selectedDate || loading || (!!selectedDate && getCount(selectedDate) === 0)}
+          className={[
+            "flex-1 py-3 rounded-xl font-semibold text-sm transition-all",
+            selectedDate && !loading && getCount(selectedDate) > 0
+              ? "bg-gray-100 hover:bg-gray-200 active:scale-[0.98] text-gray-700"
+              : "bg-gray-50 text-gray-300 cursor-not-allowed",
+          ].join(" ")}
+        >
+          Undone
+        </button>
         <button
           onClick={handleDone}
           disabled={!selectedDate || loading}
           className={[
-            "w-full py-3 rounded-xl font-semibold text-sm transition-all",
+            "flex-1 py-3 rounded-xl font-semibold text-sm transition-all",
             selectedDate && !loading
               ? "bg-blue-500 hover:bg-blue-600 active:scale-[0.98] text-white shadow-sm"
               : "bg-gray-100 text-gray-400 cursor-not-allowed",
           ].join(" ")}
         >
-          {loading
-            ? "Saving…"
-            : selectedDate
-            ? "Done"
-            : "Select a date first"}
+          {loading ? "Saving…" : selectedDate ? "Done" : "Select a date"}
         </button>
       </div>
 
