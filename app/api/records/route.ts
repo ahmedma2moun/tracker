@@ -24,7 +24,8 @@ export async function GET(request: NextRequest) {
       records: records.map((r) => ({ date: r.date, count: r.count })),
       monthTotal,
     });
-  } catch {
+  } catch (err) {
+    console.error("[GET /api/records]", err);
     return NextResponse.json(
       { success: false, error: "Failed to fetch records" },
       { status: 500 }

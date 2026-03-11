@@ -23,7 +23,8 @@ export async function POST(request: NextRequest) {
     );
 
     return NextResponse.json({ success: true, record });
-  } catch {
+  } catch (err) {
+    console.error("[POST /api/done]", err);
     return NextResponse.json(
       { success: false, error: "Failed to mark done" },
       { status: 500 }
