@@ -26,7 +26,7 @@ export async function POST(request: NextRequest) {
   } catch (err) {
     console.error("[POST /api/done]", err);
     return NextResponse.json(
-      { success: false, error: "Failed to mark done", detail: err instanceof Error ? err.message : String(err) },
+      { success: false, error: "Failed to mark done" },
       { status: 500 }
     );
   }

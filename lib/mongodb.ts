@@ -19,8 +19,6 @@ async function connectDB() {
   }
 
   if (!cached.promise) {
-    const redacted = MONGODB_URI.replace(/:\/\/[^@]+@/, "://<credentials>@");
-    console.log("[connectDB] connecting to", redacted);
     cached.promise = mongoose.connect(MONGODB_URI).then((m) => m);
   }
 

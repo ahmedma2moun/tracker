@@ -27,7 +27,7 @@ export async function GET(request: NextRequest) {
   } catch (err) {
     console.error("[GET /api/records]", err);
     return NextResponse.json(
-      { success: false, error: "Failed to fetch records", detail: err instanceof Error ? err.message : String(err) },
+      { success: false, error: "Failed to fetch records" },
       { status: 500 }
     );
   }
